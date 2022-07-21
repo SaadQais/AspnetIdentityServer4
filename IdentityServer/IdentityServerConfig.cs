@@ -5,9 +5,20 @@ namespace IdentityServer
 {
     public class IdentityServerConfig
     {
-        public static IEnumerable<Client> Clients => new Client[] { };
+        public static IEnumerable<Client> Clients => new Client[] { 
+            new Client
+            {
+                ClientId = "MoviesClient",
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                ClientSecrets =
+                {
+                    new Secret("secret".Sha256())
+                },
+                AllowedScopes = { "MoviesApi" }
+            } 
+        };
 
-        public static IEnumerable<ApiScope> ApiScopes => new ApiScope[] { };
+        public static IEnumerable<ApiScope> ApiScopes => new ApiScope[] { new ApiScope("MoviesApi", "Movies Api") };
 
         public static IEnumerable<ApiResource> ApiResources => new ApiResource[] { };
 
