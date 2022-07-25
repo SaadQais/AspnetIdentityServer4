@@ -1,33 +1,54 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Movies.Client.Models;
 using Movies.Client.Services;
+using System.Diagnostics;
 
 namespace Movies.Client.Controllers
 {
+    [Authorize]
     public class MoviesController : Controller
     {
-        private readonly IMovieService _service;
+        //private readonly IMovieService _service;
 
-        public MoviesController(MovieService service)
+        public MoviesController()
         {
-            _service = service;
+            //_service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         // GET: Movies
         public async Task<IActionResult> Index()
         {
-              return View(await _service.GetAllAsync());
+            await LogTokenAndClaims();
+            return View(new List<Movie>());
         }
 
+        public async Task LogTokenAndClaims()
+        {
+            var identityToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
+
+            Debug.WriteLine($"Identity token: {identityToken}");
+
+            foreach (var claim in User.Claims)
+            {
+                Debug.WriteLine($"Claim type: {claim.Type} - Claim value: {claim.Value}");
+            }
+        }
+
+
         // GET: Movies/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var movie = await _service.GetByIdAsync(id.Value);
+            var movie = new Movie(); //await _service.GetByIdAsync(id.Value);
 
             if (movie == null)
             {
@@ -52,7 +73,7 @@ namespace Movies.Client.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _service.CreateAsync(movie);
+                //await _service.CreateAsync(movie);
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
@@ -66,7 +87,7 @@ namespace Movies.Client.Controllers
                 return NotFound();
             }
 
-            var movie = await _service.GetByIdAsync(id.Value);
+            var movie = new Movie();//await _service.GetByIdAsync(id.Value);
 
             if (movie == null)
             {
@@ -91,7 +112,7 @@ namespace Movies.Client.Controllers
             {
                 try
                 {
-                    await _service.UpdateAsync(movie);
+                    //await _service.UpdateAsync(movie);
                 }
                 catch 
                 {
@@ -110,7 +131,7 @@ namespace Movies.Client.Controllers
                 return NotFound();
             }
 
-            var movie = await _service.GetByIdAsync(id.Value);
+            var movie = new Movie(); //await _service.GetByIdAsync(id.Value);
 
             if (movie == null)
             {
@@ -125,14 +146,20 @@ namespace Movies.Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var movie = await _service.GetByIdAsync(id);
+            //var movie = await _service.GetByIdAsync(id);
 
-            if (movie != null)
-            {
-                await _service.DeleteAsync(movie.Id);
-            }
+            //if (movie != null)
+            //{
+            //    await _service.DeleteAsync(movie.Id);
+            //}
             
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
         }
     }
 }
