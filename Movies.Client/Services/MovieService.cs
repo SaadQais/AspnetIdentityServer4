@@ -1,5 +1,6 @@
 ﻿using Movies.Client.Models;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Movies.Client.Services
 {
@@ -28,58 +29,69 @@ namespace Movies.Client.Services
 
             return movies;
 
-            //var apiCredentials = new ClientCredentialsTokenRequest
-            //{
-            //    Address = "https://localhost:5005/connect/token",
-            //    ClientId = "MoviesClient",
-            //    ClientSecret = "secret",
-            //    Scope = "MoviesApi"
-            //};
-
-            //var client = new HttpClient();
-
-            //var discovery = await client.GetDiscoveryDocumentAsync("https://localhost:5005");
-
-            //if (discovery.IsError)
-            //    return null;
-
-            //var tokenResponse = await client.RequestClientCredentialsTokenAsync(apiCredentials);
-
-            //if (tokenResponse.IsError)
-            //    return null;
-
-            //var apiClient = new HttpClient();
-
-            //apiClient.SetBearerToken(tokenResponse.AccessToken);
-
-            //var response = await apiClient.GetAsync("https://localhost:5001/api/Movies");
-            //response.EnsureSuccessStatusCode();
-
-            //var content = await response.Content.ReadAsStringAsync();
-
-            //List<Movie> movies = JsonConvert.DeserializeObject<List<Movie>>(content);
-
-            //return movies;
         }
 
-        public Task<Movie> GetByIdAsync(int id)
+        public async Task<Movie> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var httpClient = _httpClientFactory.CreateClient("MoviesApiClient");
+
+            var request = new HttpRequestMessage(HttpMethod.Get, $"api/movies/{id}");
+
+            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
+                .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            Movie movie = JsonConvert.DeserializeObject<Movie>(content);
+
+            return movie;
         }
 
-        public Task<Movie> CreateAsync(Movie movie)
+        public async Task<Movie> CreateAsync(Movie movie)
         {
-            throw new NotImplementedException();
+            var httpClient = _httpClientFactory.CreateClient("MoviesApiClient");
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "api/movies/")
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(movie), Encoding.UTF8, "application/json")
+            };
+
+            var response = await httpClient.SendAsync(request)
+                .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            return movie;
         }
 
-        public Task<Movie> UpdateAsync(Movie movie)
+        public async Task<Movie> UpdateAsync(Movie movie)
         {
-            throw new NotImplementedException();
+            var httpClient = _httpClientFactory.CreateClient("MoviesApiClient");
+
+            var request = new HttpRequestMessage(HttpMethod.Put, $"api/movies/{movie.Id}")
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(movie), Encoding.UTF8, "application/json")
+            };
+
+            var response = await httpClient.SendAsync(request)
+                .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
+
+            return movie;
         }
 
-        public Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var httpClient = _httpClientFactory.CreateClient("MoviesApiClient");
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"api/movies/{id}");
+
+            var response = await httpClient.SendAsync(request)
+                .ConfigureAwait(false);
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }

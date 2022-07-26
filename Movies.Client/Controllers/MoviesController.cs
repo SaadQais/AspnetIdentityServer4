@@ -41,14 +41,14 @@ namespace Movies.Client.Controllers
 
 
         // GET: Movies/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> DetailsAsync(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var movie = new Movie(); //await _service.GetByIdAsync(id.Value);
+            var movie = await _service.GetByIdAsync(id.Value);
 
             if (movie == null)
             {
@@ -73,7 +73,7 @@ namespace Movies.Client.Controllers
         {
             if (ModelState.IsValid)
             {
-                //await _service.CreateAsync(movie);
+                await _service.CreateAsync(movie);
                 return RedirectToAction(nameof(Index));
             }
             return View(movie);
@@ -87,7 +87,7 @@ namespace Movies.Client.Controllers
                 return NotFound();
             }
 
-            var movie = new Movie();//await _service.GetByIdAsync(id.Value);
+            var movie = await _service.GetByIdAsync(id.Value);
 
             if (movie == null)
             {
@@ -112,7 +112,7 @@ namespace Movies.Client.Controllers
             {
                 try
                 {
-                    //await _service.UpdateAsync(movie);
+                    await _service.UpdateAsync(movie);
                 }
                 catch 
                 {
@@ -131,7 +131,7 @@ namespace Movies.Client.Controllers
                 return NotFound();
             }
 
-            var movie = new Movie(); //await _service.GetByIdAsync(id.Value);
+            var movie = await _service.GetByIdAsync(id.Value);
 
             if (movie == null)
             {
@@ -146,13 +146,13 @@ namespace Movies.Client.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            //var movie = await _service.GetByIdAsync(id);
+            var movie = await _service.GetByIdAsync(id);
 
-            //if (movie != null)
-            //{
-            //    await _service.DeleteAsync(movie.Id);
-            //}
-            
+            if (movie != null)
+            {
+                await _service.DeleteAsync(movie.Id);
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
