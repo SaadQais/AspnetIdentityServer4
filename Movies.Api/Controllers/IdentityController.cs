@@ -8,6 +8,7 @@ namespace Movies.Api.Controllers
     [Authorize]
     public class IdentityController : ControllerBase
     {
+        [HttpGet]
         public IActionResult Get()
         {
             return new JsonResult(User.Claims.Select(c => new

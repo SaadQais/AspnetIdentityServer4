@@ -18,7 +18,6 @@ namespace Movies.Api.Controllers
             _context = context;
         }
 
-        // GET: api/Movies
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Movie>>> GetMovie()
         {
@@ -40,7 +39,8 @@ namespace Movies.Api.Controllers
         }
 
         // PUT: api/Movies/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMovie(int id, Movie movie)
         {
@@ -71,7 +71,8 @@ namespace Movies.Api.Controllers
         }
 
         // POST: api/Movies
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         public async Task<ActionResult<Movie>> PostMovie(Movie movie)
         {
@@ -83,7 +84,7 @@ namespace Movies.Api.Controllers
 
         // DELETE: api/Movies/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMovie(int id)
+        public async Task<ActionResult<Movie>> DeleteMovie(int id)
         {
             var movie = await _context.Movie.FindAsync(id);
             if (movie == null)
@@ -94,7 +95,7 @@ namespace Movies.Api.Controllers
             _context.Movie.Remove(movie);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return movie;
         }
 
         private bool MovieExists(int id)

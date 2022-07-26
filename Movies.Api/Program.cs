@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<MoviesContext>(options => options.UseInMemoryDatabase("MoviesDB"));
 
 builder.Services.AddAuthentication("Bearer")

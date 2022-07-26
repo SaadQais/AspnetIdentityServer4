@@ -6,31 +6,60 @@ namespace Movies.Client.Services
     public class MovieService : IMovieService
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public MovieService(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
+        
+        public MovieService(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
-            _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         }
 
         public async Task<IEnumerable<Movie>> GetAllAsync()
         {
-            var httpClient = _httpClientFactory.CreateClient("MovieAPIClient");
+            var httpClient = _httpClientFactory.CreateClient("MoviesApiClient");
 
-            var request = new HttpRequestMessage(
-                HttpMethod.Get,
-                "/movies");
+            var request = new HttpRequestMessage(HttpMethod.Get, "api/movies");
 
-            var response = await httpClient.SendAsync(
-                request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead)
+                .ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
             var content = await response.Content.ReadAsStringAsync();
-            var movieList = JsonConvert.DeserializeObject<List<Movie>>(content);
+            List<Movie> movies = JsonConvert.DeserializeObject<List<Movie>>(content);
 
-            return movieList;
+            return movies;
+
+            //var apiCredentials = new ClientCredentialsTokenRequest
+            //{
+            //    Address = "https://localhost:5005/connect/token",
+            //    ClientId = "MoviesClient",
+            //    ClientSecret = "secret",
+            //    Scope = "MoviesApi"
+            //};
+
+            //var client = new HttpClient();
+
+            //var discovery = await client.GetDiscoveryDocumentAsync("https://localhost:5005");
+
+            //if (discovery.IsError)
+            //    return null;
+
+            //var tokenResponse = await client.RequestClientCredentialsTokenAsync(apiCredentials);
+
+            //if (tokenResponse.IsError)
+            //    return null;
+
+            //var apiClient = new HttpClient();
+
+            //apiClient.SetBearerToken(tokenResponse.AccessToken);
+
+            //var response = await apiClient.GetAsync("https://localhost:5001/api/Movies");
+            //response.EnsureSuccessStatusCode();
+
+            //var content = await response.Content.ReadAsStringAsync();
+
+            //List<Movie> movies = JsonConvert.DeserializeObject<List<Movie>>(content);
+
+            //return movies;
         }
 
         public Task<Movie> GetByIdAsync(int id)

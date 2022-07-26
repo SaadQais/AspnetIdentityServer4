@@ -13,18 +13,18 @@ namespace Movies.Client.Controllers
     [Authorize]
     public class MoviesController : Controller
     {
-        //private readonly IMovieService _service;
+        private readonly IMovieService _service;
 
-        public MoviesController()
+        public MoviesController(IMovieService service)
         {
-            //_service = service ?? throw new ArgumentNullException(nameof(service));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         // GET: Movies
         public async Task<IActionResult> Index()
         {
             await LogTokenAndClaims();
-            return View(new List<Movie>());
+            return View(await _service.GetAllAsync());
         }
 
         public async Task LogTokenAndClaims()
