@@ -22,10 +22,11 @@ builder.Services.AddAuthentication(options =>
 
         options.ClientId = "movies_mvc_client";
         options.ClientSecret = "secret";
-        options.ResponseType = "code";
+        options.ResponseType = "code id_token";
 
         options.Scope.Add("openid");
         options.Scope.Add("profile");
+        options.Scope.Add("MoviesApi");
 
         options.SaveTokens = true;
 
@@ -36,7 +37,7 @@ builder.Services.AddTransient<AuthenticationDelegatingHandler>();
 
 builder.Services.AddHttpClient("MoviesApiClient", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:5001/"); // API GATEWAY URL
+    client.BaseAddress = new Uri("https://localhost:5001/"); 
     client.DefaultRequestHeaders.Clear();
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
 }).AddHttpMessageHandler<AuthenticationDelegatingHandler>();
@@ -46,14 +47,6 @@ builder.Services.AddHttpClient("IDPClient", client =>
     client.BaseAddress = new Uri("https://localhost:5005/");
     client.DefaultRequestHeaders.Clear();
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-});
-
-builder.Services.AddSingleton(new ClientCredentialsTokenRequest
-{
-    Address = "https://localhost:5005/connect/token",
-    ClientId = "MoviesClient",
-    ClientSecret = "secret",
-    Scope = "MoviesApi"
 });
 
 builder.Services.AddHttpContextAccessor();

@@ -20,7 +20,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("ClientIdPolicy", policy =>
     {
-        policy.RequireClaim("client_id", "MoviesClient");
+        policy.RequireClaim("client_id", "MoviesClient", "movies_mvc_client");
     });
 });
 

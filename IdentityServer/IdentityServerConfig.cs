@@ -11,19 +11,9 @@ namespace IdentityServer
         public static IEnumerable<Client> Clients => new Client[] { 
             new Client
             {
-                ClientId = "MoviesClient",
-                AllowedGrantTypes = GrantTypes.ClientCredentials,
-                ClientSecrets =
-                {
-                    new Secret("secret".Sha256())
-                },
-                AllowedScopes = { "MoviesApi" }
-            },
-            new Client
-            {
                 ClientId = "movies_mvc_client",
                 ClientName = "Movies MVC Web App",
-                AllowedGrantTypes = GrantTypes.Code,
+                AllowedGrantTypes = GrantTypes.Hybrid,
                 RequirePkce = false,
                 AllowRememberConsent = false,
                 RedirectUris = new List<string>()
