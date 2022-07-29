@@ -1,4 +1,5 @@
 ﻿using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Net.Http.Headers;
@@ -26,11 +27,14 @@ builder.Services.AddAuthentication(options =>
 
         options.Scope.Add("openid");
         options.Scope.Add("profile");
+        options.Scope.Add("address");
+        options.Scope.Add("email");
         options.Scope.Add("MoviesApi");
 
         options.SaveTokens = true;
 
         options.GetClaimsFromUserInfoEndpoint = true;
+        options.ClaimActions.MapAll();
     });
 
 builder.Services.AddTransient<AuthenticationDelegatingHandler>();

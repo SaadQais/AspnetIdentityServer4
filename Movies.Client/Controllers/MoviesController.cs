@@ -30,7 +30,7 @@ namespace Movies.Client.Controllers
         public async Task LogTokenAndClaims()
         {
             var identityToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
-
+            
             Debug.WriteLine($"Identity token: {identityToken}");
 
             foreach (var claim in User.Claims)
