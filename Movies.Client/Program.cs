@@ -18,10 +18,21 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
 })
-    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    {
+        options.Events.OnRedirectToAccessDenied = context =>
+        {
+            context.RedirectUri = new PathString("https://localhost:5005/Account/AccessDenied");
+            context.Response.Redirect(context.RedirectUri);
+
+            return Task.CompletedTask;
+        };
+    })
     .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
     {
         options.Authority = "https://localhost:5005";
+        
+        //options.AccessDeniedPath = new PathString("https://localhost:5005/Account/AccessDenied");
 
         options.ClientId = "movies_mvc_client";
         options.ClientSecret = "secret";

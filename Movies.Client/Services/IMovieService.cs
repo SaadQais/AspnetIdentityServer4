@@ -9,5 +9,6 @@ namespace Movies.Client.Services
         public Task<Movie> CreateAsync(Movie movie);
         public Task<Movie> UpdateAsync(Movie movie);
         public Task DeleteAsync(int id);
+        Task<UserInfoViewModel> GetUserInfoAsync();
     }
 }
