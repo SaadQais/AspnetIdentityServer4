@@ -16,6 +16,18 @@
         "AuthenticationProviderKey": "IdentityApiKey",
         "AllowedScopes": []
       }
+    },
+    {
+      "DownstreamPathTemplate": "/api/movies/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5001
+        }
+      ],
+      "UpstreamPathTemplate": "/movies/{id}",
+      "UpstreamHttpMethod": [ "GET", "DELETE" ]
     }
   ]
 }

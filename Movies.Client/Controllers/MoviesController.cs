@@ -48,7 +48,7 @@ namespace Movies.Client.Controllers
 
 
         // GET: Movies/Details/5
-        public async Task<IActionResult> DetailsAsync(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
